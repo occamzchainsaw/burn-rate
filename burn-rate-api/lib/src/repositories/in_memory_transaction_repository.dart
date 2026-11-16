@@ -25,16 +25,18 @@ class InMemoryTransactionRepository implements TransactionRepository {
     DateTime? from,
     DateTime? to,
     TransactionType? type,
+    String? categoryId,
   }) async {
     return _items.values
         .where(
           (t) =>
               (from == null || !t.date.isBefore(from)) &&
               (to == null || !t.date.isAfter(to)) &&
-              (type == null || t.type == type),
+              (type == null || t.type == type) &&
+              (categoryId == null || t.categoryId == categoryId),
         )
         .toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+      ..sort((a, b) => a.date.compareTo(b.date));
   }
 
   @override
@@ -43,5 +45,10 @@ class InMemoryTransactionRepository implements TransactionRepository {
     final t = Transaction.fromInput(id, input);
     _items[id] = t;
     return t;
+  }
+
+  @override
+  Future<bool> existsWithCategory(String categoryId) async {
+    return _items.values.any((t) => t.categoryId == categoryId);
   }
 }

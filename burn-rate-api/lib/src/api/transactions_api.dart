@@ -30,6 +30,7 @@ class TransactionsApi {
       from: q['from'] == null ? null : parseDate(q['from'], 'from'),
       to: q['to'] == null ? null : parseDate(q['to'], 'to'),
       type: q['type'] == null ? null : TransactionType.parse(q['type']),
+      categoryId: q['categoryId'] == null ? null : q['categoryId'] as String
     );
     return jsonResponse(items);
   }

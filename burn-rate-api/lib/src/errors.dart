@@ -15,3 +15,7 @@ class BadRequestException extends ApiException {
 class NotFoundException extends ApiException {
   const NotFoundException(String message) : super(404, message);
 }
+
+class ConflictException extends ApiException {
+  const ConflictException(String message) : super(409, message);
+}

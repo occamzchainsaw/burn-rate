@@ -18,7 +18,7 @@ class CategoriesApi {
 
   void register(Router router) {
     router
-      ..get(_base, _list) // GET    /api/v1/categories?from=&to=&type=
+      ..get(_base, _list) // GET    /api/v1/categories?type=
       ..post(_base, _create) // POST   /api/v1/categories
       ..get('$_base/<id>', _get) // GET    /api/v1/categories/{id}
       ..put('$_base/<id>', _replace) // PUT    /api/v1/categories/{id}
@@ -45,32 +45,41 @@ class CategoriesApi {
 
   Future<Response> _get(Request request, String id) async {
     final t = await _categories.getById(id);
-    if (t == null) throw NotFoundException('Transaction $id not found');
+    if (t == null) throw NotFoundException('Category $id not found');
     return jsonResponse(t);
   }
 
   Future<Response> _replace(Request request, String id) async {
     final input = CategoryInput.fromJson(await readJson(request));
+    await _checkTypeChange(id, input);
     final updated = await _categories.replace(id, input);
-    if (updated == null) throw NotFoundException('Transaction $id not found');
+    if (updated == null) throw NotFoundException('Category $id not found');
     return jsonResponse(updated);
   }
 
   Future<Response> _delete(Request request, String id) async {
-    if (await _hasDependentTransactions(id)) return Response(409);
+    await _checkDependentTransactions(id);
     final deleted = await _categories.delete(id);
-    if (!deleted) throw NotFoundException('Transaction $id not found');
+    if (!deleted) throw NotFoundException('Category $id not found');
     return Response(204); // No Content
   }
 
-  Future<bool> _hasDependentTransactions(String categoryId) async {
-    final transactions = await _transactions.list(
-      from: null,
-      to: null,
-      type: null,
-    );
-    return transactions
-        .where((t) => t.categoryId.compareTo(categoryId) == 0)
-        .isNotEmpty;
+  Future<void> _checkDependentTransactions(String categoryId) async {
+    if (await _transactions.existsWithCategory(categoryId)) {
+      throw ConflictException(
+        "Transactions using category '$categoryId' still exist",
+      );
+    }
+  }
+
+  Future<void> _checkTypeChange(String id, CategoryInput input) async {
+    final existing = await _categories.getById(id);
+    if (existing == null) return;
+    if (existing.type != input.type &&
+        await _transactions.existsWithCategory(id)) {
+      throw ConflictException(
+        "Can't change type of '${existing.name}': transactions use it",
+      );
+    }
   }
 }

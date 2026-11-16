@@ -6,6 +6,7 @@ abstract interface class TransactionRepository {
     DateTime? from,
     DateTime? to,
     TransactionType? type,
+    String? categoryId,
   });
 
   Future<Transaction?> getById(String id);
@@ -17,4 +18,6 @@ abstract interface class TransactionRepository {
 
   /// Returns false if [id] doesn't exist
   Future<bool> delete(String id);
+
+  Future<bool> existsWithCategory(String categoryId);
 }
