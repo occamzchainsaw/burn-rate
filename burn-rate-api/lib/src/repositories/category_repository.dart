@@ -1,5 +1,6 @@
 import '../models/category.dart';
-import '../models/transaction.dart';
+
+import 'package:burn_rate_shared/burn_rate_shared.dart';
 
 // Storage abstraction
 abstract interface class CategoryRepository {

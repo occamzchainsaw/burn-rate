@@ -19,3 +19,11 @@ class NotFoundException extends ApiException {
 class ConflictException extends ApiException {
   const ConflictException(String message) : super(409, message);
 }
+
+T orBadRequest<T>(String field, T Function() parse) {
+  try {
+    return parse();
+  } on FormatException catch (e) {
+    throw BadRequestException("'$field': ${e.message}");
+  }
+}

@@ -1,7 +1,6 @@
 import 'package:uuid/uuid.dart';
-
+import 'package:burn_rate_shared/burn_rate_shared.dart';
 import '../models/category.dart';
-import '../models/transaction.dart';
 import 'category_repository.dart';
 
 class InMemoryCategoryRepository implements CategoryRepository {
@@ -28,7 +27,7 @@ class InMemoryCategoryRepository implements CategoryRepository {
           (t) => (type == null || t.type == type),
         )
         .toList()
-      ..sort((a, b) => b.name.toLowerCase().compareTo(a.name.toLowerCase()));
+      ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   }
 
   @override

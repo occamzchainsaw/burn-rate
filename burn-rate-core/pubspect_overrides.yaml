@@ -1,0 +1,3 @@
+dependencies:
+  burn_rate_shared:
+    path: ../burn-rate-shared

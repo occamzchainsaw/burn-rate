@@ -1,5 +1,4 @@
-import 'transaction.dart';
-
+import 'package:burn_rate_shared/burn_rate_shared.dart';
 import '../errors.dart';
 
 class CategoryInput {
@@ -27,7 +26,10 @@ class CategoryInput {
 
     return CategoryInput(
       name: name.trim(),
-      type: TransactionType.parse(json['type']),
+      type: orBadRequest(
+        'type',
+        () => TransactionType.parse(json['type']),
+      ),
     );
   }
 }

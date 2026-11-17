@@ -1,5 +1,5 @@
 import 'package:uuid/uuid.dart';
-
+import 'package:burn_rate_shared/burn_rate_shared.dart';
 import '../models/transaction.dart';
 import 'transaction_repository.dart';
 

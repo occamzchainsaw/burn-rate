@@ -1,0 +1,21 @@
+name: burn_rate_core
+description: Core lib for Burn Rate
+version: 1.0.0
+publish_to: none
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.13.7
+
+# Add regular dependencies here.
+dependencies:
+  http: ^1.6.0
+  burn_rate_shared:
+    path: ../burn-rate-shared
+  # path: ^1.9.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6
+  burn_rate_api:
+    path: ../burn-rate-api

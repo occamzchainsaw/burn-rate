@@ -1,17 +1,6 @@
 import '../errors.dart';
 
-enum TransactionType {
-  expense,
-  income;
-
-  static TransactionType parse(Object? value) {
-    for (final t in TransactionType.values) {
-      if (t.name == value) return t;
-    }
-    final allowed = TransactionType.values.map((t) => t.name).join(', ');
-    throw BadRequestException("'type' must be one of: $allowed");
-  }
-}
+import 'package:burn_rate_shared/burn_rate_shared.dart';
 
 class TransactionInput {
   const TransactionInput({
@@ -64,7 +53,10 @@ class TransactionInput {
       amount: amount,
       currency: currency,
       categoryId: categoryId,
-      date: parseDate(json['date'], 'date'),
+      date: orBadRequest(
+        'date',
+        () => parseDate(json['date'], 'date'),
+      ),
       note: note as String?,
     );
   }
@@ -93,24 +85,10 @@ class Transaction {
     'amount': amount,
     'currency': currency,
     'categoryId': categoryId,
-    'date': formatDate(date),
+    'date': orBadRequest(
+      'date',
+      () => formatDate(date),
+    ),
     'note': note,
   };
 }
-
-DateTime parseDate(Object? value, String field) {
-  final error = BadRequestException(
-    "'$field' must be a valid date in YYYY-MM-DD format",
-  );
-  if (value is! String || !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value)) {
-    throw error;
-  }
-  final parsed = DateTime.tryParse(value);
-  if (parsed == null || formatDate(parsed) != value) throw error;
-  return DateTime.utc(parsed.year, parsed.month, parsed.day);
-}
-
-String formatDate(DateTime d) =>
-    '${d.year.toString().padLeft(4, '0')}-'
-    '${d.month.toString().padLeft(2, '0')}-'
-    '${d.day.toString().padLeft(2, '0')}';

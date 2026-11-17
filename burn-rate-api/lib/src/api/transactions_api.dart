@@ -1,5 +1,6 @@
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:burn_rate_shared/burn_rate_shared.dart';
 
 import '../errors.dart';
 import '../models/transaction.dart';
